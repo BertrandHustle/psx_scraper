@@ -3,8 +3,6 @@ from bs4 import BeautifulSoup
 
 
 class PartNumberFinder:
-    # frameset rows -> frame src ulist.html -> #document -> html -> body -> table102 -> class=col2/3
-    # soup("td")
     @staticmethod
     def get_game_names_and_part_numbers(url: str) -> list:
         """
