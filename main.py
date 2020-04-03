@@ -1,19 +1,11 @@
-#built-in
-import os
-import argparse
-#project
-import part_number_finder
+# project
+from psx_db import PsxDb
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-d', '--target_dir', help='directory containing psx iso folders (i.e. from PSX2PSP)')
-args = parser.parse_args()
+psx_website_us = 'https://psxdatacenter.com/ulist.html'
+psx_website_eu = 'https://psxdatacenter.com/plist.html'
+psx_website_jp = 'https://psxdatacenter.com/jlist.html'
 
-target_dir = args.target_dir
-psx_dirs = os.listdir(target_dir)
-
-# col2 = serial num
-# col3 = game name
-
-pnf = part_number_finder.PartNumberFinder()
-
-pnf.get_game_name_from_part_number('test')
+urls = [psx_website_eu, psx_website_jp, psx_website_us]
+db = PsxDb('psx_us')
+db.populate_games(psx_website_us)
+db.get_all_games()
