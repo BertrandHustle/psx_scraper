@@ -11,7 +11,6 @@ class PsxDb:
     :poram db_name: filename of database to create
     :param url: url to scrape for data
     """
-    # TODO: don't create db if db file already exists
     def __init__(self, db_name: str, url: str):
         self.url = url
         self.conn = sqlite3.connect('databases/' + db_name + '.db')
@@ -19,7 +18,7 @@ class PsxDb:
         # Create table
         self.cursor.execute('CREATE TABLE IF NOT EXISTS games(part_number text, name text)')
         # Check if table is already populated
-        if self.cursor.execute("SELECT count(*) FROM games").fetchone()[0] > 0:
+        if self.cursor.execute("SELECT count(*) FROM games").fetchone()[0] < 0:
             self.populate_games()
         self.conn.commit()
 
