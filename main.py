@@ -1,3 +1,6 @@
+# native
+import argparse
+import os
 # project
 from psxDb import PsxDb
 
@@ -11,5 +14,14 @@ dbs = [
     PsxDb('psx_eu', psx_eu)
 ]
 
-for db in dbs:
-    print(db.lookup_by_part_number_or_name('SLUS-00975'))
+#parser = argparse.ArgumentParser()
+#args = parser.parse_args()
+#target_dir = args.dir
+psx_dirs = os.listdir()
+# psx_dirs = psx_dirs.split(' ')
+for dir in psx_dirs:
+    for db in dbs:
+        lookup = db.lookup_by_part_number_or_name(dir)
+        if lookup:
+            os.rename(dir, lookup)
+
