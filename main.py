@@ -2,7 +2,7 @@
 import argparse
 import os
 # project
-from psx_db import PsxDb
+from psxDb import PsxDb
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dir", help="directory to scrape")
@@ -32,3 +32,4 @@ for db in dbs:
                 os.rename(folder, lookup_result)
             else:
                 os.rename(os.path.join(dir_to_scrape, folder), lookup_result)
+

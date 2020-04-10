@@ -1,7 +1,8 @@
 # native
 import sqlite3
+from re import match
 # project
-from part_number_finder import PartNumberFinder
+from partNumberFinder import PartNumberFinder
 
 
 class PsxDb:
@@ -16,8 +17,13 @@ class PsxDb:
         self.cursor = self.conn.cursor()
         # Create table
         self.cursor.execute('CREATE TABLE IF NOT EXISTS games(part_number text, name text)')
-        self.populate_games()
+        # Check if table is already populated
+        if self.cursor.execute("SELECT count(*) FROM games").fetchone()[0] < 0:
+            self.populate_games()
         self.conn.commit()
+
+    class PsxDbError(Exception):
+        pass
 
     def populate_games(self):
         """
@@ -29,22 +35,20 @@ class PsxDb:
         # save changes to db
         self.conn.commit()
 
-    def get_name_by_part_number(self, part_number: str) -> str:
+    def lookup_by_part_number_or_name(self, target: str) -> str:
         """
-        gets game name given a part number
-        :return str: name
+        looks up name by part number or vice verse
+        :param target: either a part number or game name
+        :return: part_number or name, depending on target
         """
-        self.cursor.execute('SELECT * FROM games WHERE part_number=?', (part_number,))
-        result = self.cursor.fetchone()
-        if result:
-            return result[1]
+        search_by = ''
+        if match(r'S\w{3}-\d{5}', target):
+            search_by = 'part_number'
+        else:
+            search_by = 'name'
+        self.cursor.execute('SELECT * FROM games WHERE {}=?'.format(search_by), (target,))
+        try:
+            return self.cursor.fetchone()[1]
+        except TypeError:
+            pass
 
-    def get_part_number_by_name(self, name: str) -> str:
-        """
-        gets game part number given a name
-        :return str: part_number
-        """
-        self.cursor.execute('SELECT * FROM games WHERE name=?', (name,))
-        result = self.cursor.fetchone()
-        if result:
-            return result[0]
