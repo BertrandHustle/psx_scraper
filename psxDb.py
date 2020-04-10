@@ -35,20 +35,25 @@ class PsxDb:
         # save changes to db
         self.conn.commit()
 
-    def lookup_by_part_number_or_name(self, target: str) -> str:
+    def get_name_by_part_number(self, part_number: str) -> str:
+        """
+        gets game name given a part number
+        :return str: name
+        """
+        self.cursor.execute('SELECT * FROM games WHERE part_number=?', (part_number,))
+        result = self.cursor.fetchone()
+        if result:
+            return result[1]
+
+    def get_part_number_by_name(self, name: str) -> str:
         """
         looks up name by part number or vice verse
         :param target: either a part number or game name
         :return: part_number or name, depending on target
         """
-        search_by = ''
-        if match(r'S\w{3}-\d{5}', target):
-            search_by = 'part_number'
-        else:
-            search_by = 'name'
-        self.cursor.execute('SELECT * FROM games WHERE {}=?'.format(search_by), (target,))
-        try:
-            return self.cursor.fetchone()[1]
-        except TypeError:
-            pass
+        self.cursor.execute('SELECT * FROM games WHERE name=?', (name,))
+        result = self.cursor.fetchone()
+        if result:
+            return result[0]
+
 
