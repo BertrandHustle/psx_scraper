@@ -35,7 +35,9 @@ class PsxDb:
         :return str: name
         """
         self.cursor.execute('SELECT * FROM games WHERE part_number=?', (part_number,))
-        return self.cursor.fetchone()
+        result = self.cursor.fetchone()
+        if result:
+            return result[1]
 
     def get_part_number_by_name(self, name: str) -> str:
         """
@@ -43,4 +45,6 @@ class PsxDb:
         :return str: part_number
         """
         self.cursor.execute('SELECT * FROM games WHERE name=?', (name,))
-        return self.cursor.fetchone()
+        result = self.cursor.fetchone()
+        if result:
+            return result[0]
