@@ -2,7 +2,7 @@
 import argparse
 import os
 # project
-from psxDb import PsxDb
+import GamesList
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dir", help="directory to scrape")
@@ -14,22 +14,21 @@ if args.dir:
 
 folders = os.listdir(dir_to_scrape)
 
-psx_us = 'https://psxdatacenter.com/ulist.html'
-psx_eu = 'https://psxdatacenter.com/plist.html'
-psx_jp = 'https://psxdatacenter.com/jlist.html'
+games_list = GamesList.GamesList()
 
-dbs = [
-    PsxDb('psx_us', psx_us),
-    PsxDb('psx_jp', psx_jp),
-    PsxDb('psx_eu', psx_eu)
-]
+urls = [
+    'https://psxdatacenter.com/ulist.html',
+    'https://psxdatacenter.com/plist.html',
+    'https://psxdatacenter.com/jlist.html'
+    ]
 
-for db in dbs:
-    for folder in folders:
-        lookup_result = db.get_name_by_part_number(folder)
-        if lookup_result:
-            if dir_to_scrape == '.':
-                os.rename(folder, lookup_result)
-            else:
-                os.rename(os.path.join(dir_to_scrape, folder), lookup_result)
+for url in urls:
+    games_list.populate_games_list(url)
 
+for folder in folders:
+    lookup_result = games_list.get_name_by_part_number(folder)
+    if lookup_result:
+        if dir_to_scrape == '.':
+            os.rename(folder, lookup_result)
+        else:
+            os.rename(os.path.join(dir_to_scrape, folder), lookup_result)
