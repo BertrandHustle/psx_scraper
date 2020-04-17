@@ -19,7 +19,6 @@ class GamesList:
         for pair in PartNumberFinder.get_game_names_and_part_numbers(url):
             self.games_list[pair[0]] = pair[1]
 
-    # TODO: this needs to put a hyphen between the letters and numbers
     def get_name_by_part_number(self, part_number: str) -> str:
         """
         gets game name given a part number

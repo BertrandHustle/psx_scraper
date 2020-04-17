@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--dir", help="directory to scrape")
 
 args = parser.parse_args()
-dir_to_scrape = os.curdir
+dir_to_scrape = os.pardir
 if args.dir:
     dir_to_scrape = args.dir
 
@@ -28,7 +28,4 @@ for url in urls:
 for folder in folders:
     lookup_result = games_list.get_name_by_part_number(folder)
     if lookup_result:
-        if dir_to_scrape == '.':
-            os.rename(folder, lookup_result)
-        else:
-            os.rename(os.path.join(dir_to_scrape, folder), lookup_result)
+        os.rename(os.path.join(dir_to_scrape, folder), os.path.join(dir_to_scrape, lookup_result))
