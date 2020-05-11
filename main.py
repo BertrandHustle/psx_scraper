@@ -21,9 +21,10 @@ def get_game_name(filename):
             try:
                 gamename += eboot.read(1).decode()
             except UnicodeDecodeError:
-                return gamename.replace(' ', '')
+                return gamename.replace('\x00', '')
 
 
+# TODO: restrict game name + path to 31 chars
 for folder in folders:
     folder_path = os.path.join(dir_to_scrape, folder)
     eboot_path = os.path.join(folder_path, 'EBOOT.PBP')
