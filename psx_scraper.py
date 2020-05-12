@@ -35,7 +35,6 @@ def get_game_name(filename):
                     return gamename[:-1]
 
 
-# TODO: add error/not found logging
 # TODO: restrict game name + path to 31 chars
 for folder in folders:
     folder_path = os.path.join(dir_to_scrape, folder)

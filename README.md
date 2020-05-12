@@ -3,6 +3,4 @@ which games you have.
   
 psx_scraper aims to fix that.
  
-Just clone this repo to whatever folder your eboot folders live in and run main.py.
-
-You'll need to have beautiful soup installed, which you can do with `pip install beautifulsoup4`.
+Just run the script on any system where Python is installed.
