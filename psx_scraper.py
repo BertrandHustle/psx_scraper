@@ -14,11 +14,17 @@ if args.dir:
 
 folders = [d for d in os.listdir(dir_to_scrape) if os.path.isdir(d)]
 log_file = 'psx_scraper.log'
+# 0 out log file if it exists
+try:
+    open(log_file, 'w').close()
+except FileNotFoundError:
+    pass
 
 
 def get_game_name(filename):
     gamename = ''
     with open(filename, 'rb') as eboot:
+        # check for PBP header
         if not eboot.read(4).decode() == '\x00' + 'PBP':
             return False
         else:
