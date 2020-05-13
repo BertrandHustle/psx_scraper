@@ -30,12 +30,20 @@ def get_game_name(filename):
         else:
             eboot.seek(int('0x358', base=16))
             while True:
-                gamename += eboot.read(1).decode()
-                if gamename[-1:] == '\x00':
-                    return gamename[:-1]
+                current_byte = eboot.read(1)
+                if current_byte == '\x00':
+                    break
+                else:
+                    try:
+                        gamename += current_byte.decode()
+                    except UnicodeDecodeError:
+                        break
+    if len(gamename) > 31:
+        return gamename.replace(' ', '')[:21].replace('\x00', '')
+    else:
+        return gamename.replace('\x00', '')
 
 
-# TODO: restrict game name + path to 31 chars
 for folder in folders:
     folder_path = os.path.join(dir_to_scrape, folder)
     eboot_path = os.path.join(folder_path, 'EBOOT.PBP')
