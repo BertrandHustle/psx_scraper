@@ -47,10 +47,10 @@ def get_game_name(filename: str):
     gamename = b''
     with open(filename, 'rb') as eboot:
         pbp_bytes = eboot.read()
-        # check for PBP header
-        if b'PSISOIMG' not in pbp_bytes or b'PSTITLEI' not in pbp_bytes:
-            return False
-        else:
+        # check the bytes for information that confirms the pbpfile is from a psx game
+        # PSISOIMG is for single disc games and PSTITLEI is for multi-disc games
+        # based on evertonstz's contributions
+        if b'PSISOIMG' in pbp_bytes or b'PSTITLEI' in pbp_bytes:
             eboot.seek(int('0x358', base=16))
             while True:
                 current_byte = eboot.read(1)
@@ -61,6 +61,8 @@ def get_game_name(filename: str):
                         gamename += current_byte
                     except UnicodeDecodeError:
                         break
+        else:
+            return False
     gamename = gamename.decode()
     if len(gamename) > 31:
         return gamename.replace(' ', '')[:21].replace('\x00', '')
