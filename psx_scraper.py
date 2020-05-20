@@ -37,12 +37,27 @@ try:
 except FileNotFoundError:
     pass
 
+def test_pbp(file: bytes):
+    """function to test file for psx-pbp information"""
+    try:
+        # read the entire file
+        file.seek(0)
+        pbp_bytes = file.read()
+        
+        # check the bytes for information that confirms the pbpfile is from a psx game
+        # PSISOIMG is for single disc games and PSTITLEI is for multi-disc games
+        if b'PSISOIMG' in pbp_bytes or b'PSTITLEI' in pbp_bytes:
+            return True
+        else:
+            return False
+    except:
+        return False
 
 def get_game_name(filename):
     gamename = b''
     with open(filename, 'rb') as eboot:
         # check for PBP header
-        if not eboot.read(4).decode() == '\x00' + 'PBP':
+        if not eboot.read(4).decode() == '\x00' + 'PBP' or test_pbp(eboot) is False:
             return False
         else:
             eboot.seek(int('0x358', base=16))
