@@ -39,7 +39,7 @@ except FileNotFoundError:
 
 
 def get_game_name(filename):
-    gamename = ''
+    gamename = b''
     with open(filename, 'rb') as eboot:
         # check for PBP header
         if not eboot.read(4).decode() == '\x00' + 'PBP':
@@ -48,13 +48,14 @@ def get_game_name(filename):
             eboot.seek(int('0x358', base=16))
             while True:
                 current_byte = eboot.read(1)
-                if current_byte == '\x00':
+                if current_byte == b'\x00':
                     break
                 else:
                     try:
-                        gamename += current_byte.decode()
+                        gamename += current_byte
                     except UnicodeDecodeError:
                         break
+    gamename = gamename.decode()
     if len(gamename) > 31:
         return gamename.replace(' ', '')[:21].replace('\x00', '')
     else:
