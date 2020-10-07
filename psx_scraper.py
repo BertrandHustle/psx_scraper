@@ -65,7 +65,7 @@ def get_game_name(filename: str):
             return False
     gamename = gamename.decode()
     if len(gamename) > 31:
-        return gamename.replace(' ', '')[:21].replace('\x00', '')
+        return gamename.replace(' ', '')[:21].replace('\x00', '').replace(':', '')
     else:
         return gamename.replace('\x00', '')
 
