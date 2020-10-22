@@ -1,6 +1,7 @@
 #! python
 import argparse
 import os
+import logging
 
 """
     Copyright (C) 2020  Scott Greenberg
@@ -29,12 +30,7 @@ if args.dir:
     dir_to_scrape = args.dir
 
 folders = [d for d in os.listdir(dir_to_scrape) if os.path.isdir(d)]
-log_file = 'psx_scraper.log'
-# 0 out log file if it exists
-try:
-    open(log_file, 'w').close()
-except FileNotFoundError:
-    pass
+logging.basicConfig(filename='psx_scraper.log', level=logging.DEBUG)
 
 
 def get_game_name(filename: str):
@@ -85,10 +81,9 @@ for folder in folders:
         else:
             pass
     elif args.log:
-        with open(log_file, 'a') as log:
-            if not contains_eboot:
-                log.write('NO EBOOT.PBP FILE FOUND IN: ' + folder_path + '\n')
-            else:
-                log.write('GAME NAME NOT FOUND: ' + eboot_path + '\n')
+        if not contains_eboot:
+            logging.debug('NO EBOOT.PBP FILE FOUND IN: ' + folder_path + '\n')
+        else:
+            logging.debug('GAME NAME NOT FOUND: ' + eboot_path + '\n')
     else:
         pass
