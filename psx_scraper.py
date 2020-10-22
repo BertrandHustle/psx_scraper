@@ -1,5 +1,4 @@
 #! python
-from struct import unpack_from
 import argparse
 import os
 
