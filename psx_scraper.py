@@ -1,5 +1,5 @@
 #! python
-# native
+from struct import unpack_from
 import argparse
 import os
 
@@ -46,12 +46,15 @@ def get_game_name(filename: str):
     """
     gamename = b''
     with open(filename, 'rb') as eboot:
-        pbp_bytes = eboot.read()
+        eboot.seek(0x24)
+        pbp_verification_offset = eboot.read(4)
+        eboot.seek(int.from_bytes(pbp_verification_offset, "little"))
+        pbp_verification_string = eboot.read(8)
         # check the bytes for information that confirms the pbpfile is from a psx game
         # PSISOIMG is for single disc games and PSTITLEI is for multi-disc games
         # based on evertonstz's contributions
-        if b'PSISOIMG' in pbp_bytes or b'PSTITLEI' in pbp_bytes:
-            eboot.seek(int('0x358', base=16))
+        if pbp_verification_string == b'PSISOIMG' or pbp_verification_string == b'PSTITLEI':
+            eboot.seek(0x358)
             while True:
                 current_byte = eboot.read(1)
                 if current_byte == b'\x00':
