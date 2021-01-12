@@ -33,7 +33,7 @@ if args.dir:
 # ignores python project folders
 ignore_list = ('.', '_')
 folders = [d for d in os.listdir(dir_to_scrape) if os.path.isdir(d) and not d.startswith(ignore_list)]
-logging.basicConfig(filename='psx_scraper.log', level=logging.DEBUG)
+logging.basicConfig(filename='psx_scraper.log', encoding='utf8', level=logging.INFO)
 
 
 def get_game_name(filename: str):
@@ -81,14 +81,14 @@ for folder in folders:
         if new_folder_name:
             new_folder_path = os.path.join(dir_to_scrape, new_folder_name)
             os.rename(folder_path, new_folder_path)
+            if args.log and folder_path != new_folder_path:
+                logging.info(folder_path + '->' + new_folder_path + '\n')
         else:
             pass
     elif args.log:
-        if new_folder_name:
-            logging.debug(folder_path + '->' + new_folder_path + '\n')
-        elif not contains_eboot:
-            logging.debug('NO EBOOT.PBP FILE FOUND IN: ' + folder_path + '\n')
+        if not contains_eboot:
+            logging.info('NO EBOOT.PBP FILE FOUND IN: ' + folder_path + '\n')
         else:
-            logging.debug('GAME NAME NOT FOUND: ' + eboot_path + '\n')
+            logging.info('GAME NAME NOT FOUND: ' + eboot_path + '\n')
     else:
         pass
