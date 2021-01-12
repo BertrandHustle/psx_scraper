@@ -15,3 +15,5 @@ or specify a directory with the -d flag (see below).
 
 -l/--log: produces a log (psx_scraper.log) in the directory where the script is run, this log details any 
 pbp files that the scraper was unable to find information for
+
+-p/--print: dry run option, print out game names but make no changes to directory names
