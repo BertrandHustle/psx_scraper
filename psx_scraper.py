@@ -23,13 +23,16 @@ import logging
 parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--dir', help='directory to scrape')
 parser.add_argument('-l', '--log', help='enables logging', action='store_true')
+parser.add_argument('-p', '--print', help='print game names but make no changes', action='store_true')
 
 args = parser.parse_args()
 dir_to_scrape = os.curdir
 if args.dir:
     dir_to_scrape = args.dir
 
-folders = [d for d in os.listdir(dir_to_scrape) if os.path.isdir(d)]
+# ignores python project folders
+ignore_list = ('.', '_')
+folders = [d for d in os.listdir(dir_to_scrape) if os.path.isdir(d) and not d.startswith(ignore_list)]
 logging.basicConfig(filename='psx_scraper.log', level=logging.DEBUG)
 
 
@@ -81,7 +84,9 @@ for folder in folders:
         else:
             pass
     elif args.log:
-        if not contains_eboot:
+        if new_folder_name:
+            logging.debug(folder_path + '->' + new_folder_path + '\n')
+        elif not contains_eboot:
             logging.debug('NO EBOOT.PBP FILE FOUND IN: ' + folder_path + '\n')
         else:
             logging.debug('GAME NAME NOT FOUND: ' + eboot_path + '\n')
