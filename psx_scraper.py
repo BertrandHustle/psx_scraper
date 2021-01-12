@@ -2,6 +2,7 @@
 import argparse
 import os
 import logging
+from sys import version_info
 
 """
     Copyright (C) 2020  Scott Greenberg
@@ -30,10 +31,14 @@ dir_to_scrape = os.curdir
 if args.dir:
     dir_to_scrape = args.dir
 
+py_vers = str(version_info.major) + '.' + str(version_info.minor)
 # ignores python project folders
-ignore_list = ('.', '_')
+ignore_list = ('.', '_', 'venv')
 folders = [d for d in os.listdir(dir_to_scrape) if os.path.isdir(d) and not d.startswith(ignore_list)]
-logging.basicConfig(filename='psx_scraper.log', encoding='utf8', level=logging.INFO)
+if float(py_vers) >= 3.9:
+    logging.basicConfig(filename='psx_scraper.log', encoding='utf8', level=logging.INFO)
+else:
+    logging.basicConfig(filename='psx_scraper.log', level=logging.INFO)
 
 
 def get_game_name(filename: str):
@@ -78,11 +83,20 @@ for folder in folders:
     new_folder_name = ''
     if contains_eboot:
         new_folder_name = get_game_name(eboot_path)
+
+        # continue so we don't actually make any changes/renames
+        if args.print:
+            print(folder_path + '->' + new_folder_name + '\n')
+            continue
+
         if new_folder_name:
             new_folder_path = os.path.join(dir_to_scrape, new_folder_name)
             os.rename(folder_path, new_folder_path)
             if args.log and folder_path != new_folder_path:
-                logging.info(folder_path + '->' + new_folder_path + '\n')
+                try:
+                    logging.info(folder_path + '->' + new_folder_path + '\n')
+                except UnicodeEncodeError:
+                    logging.info('COULD NOT LOG DUE TO UTF-8 ERROR, PLEASE USE PYTHON 3.9 OR ABOVE')
         else:
             pass
     elif args.log:
