@@ -35,9 +35,9 @@ py_vers = str(version_info.major) + '.' + str(version_info.minor)
 # ignores python project folders
 ignore_list = ('.', '_', 'venv')
 folders = [d for d in os.listdir(dir_to_scrape) if os.path.isdir(d) and not d.startswith(ignore_list)]
-if float(py_vers) >= 3.9:
+if float(py_vers) >= 3.9 and args.log:
     logging.basicConfig(filename='psx_scraper.log', encoding='utf8', level=logging.INFO)
-else:
+elif args.log:
     logging.basicConfig(filename='psx_scraper.log', level=logging.INFO)
 
 
@@ -86,7 +86,7 @@ for folder in folders:
 
         # continue so we don't actually make any changes/renames
         if args.print:
-            print(folder_path + '->' + new_folder_name + '\n')
+            print(folder_path + '->' + new_folder_name)
             continue
 
         if new_folder_name:
